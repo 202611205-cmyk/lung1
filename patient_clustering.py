@@ -3,31 +3,26 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 from sklearn.cluster import KMeans
+import os
 
-# ── [안정화 버전] Linux/Streamlit 서버 기본 탑재 폰트 로드 ─────────────────
-def set_server_safe_font():
-    # 1. Matplotlib 시스템에서 인식 가능한 모든 폰트 이름 가져오기
-    available_fonts = {f.name for f in fm.fontManager.ttflist}
+# ── [프로젝트 내부 폰트 파일 로드 방식] ───────────────────────────────────
+def set_local_font():
+    # 프로젝트 폴더에 업로드한 폰트 파일 경로
+    font_path = "NanumGothic.ttf" 
     
-    # 2. 배포 서버(Ubuntu 등 Linux) 및 로컬 환경에 기본 설치되어 있을 확률이 높은 한글/우회 폰트 후보군
-    # 'DejaVu Sans'나 'Liberation Sans'는 대부분의 리눅스 서버에 기본 탑재되어 있으며 한글 네모 깨짐을 방지해 줍니다.
-    font_candidates = [
-        "NanumGothic", "NanumBarunGothic", "Malgun Gothic", 
-        "AppleGothic", "Liberation Sans", "DejaVu Sans"
-    ]
-    
-    chosen_font = "DejaVu Sans" # 기본 폴백
-    for font in font_candidates:
-        if font in available_fonts:
-            chosen_font = font
-            break
-            
-    # 3. 폰트 및 마이너스 깨짐 설정 적용
-    plt.rcParams["font.family"] = chosen_font
-    plt.rcParams["axes.unicode_minus"] = False
+    if os.path.exists(font_path):
+        # 폰트 등록 및 적용
+        fm.fontManager.addfont(font_path)
+        prop = fm.FontProperties(fname=font_path)
+        plt.rcParams["font.family"] = prop.get_name()
+    else:
+        # 파일이 없을 때를 대비한 폴백
+        plt.rcParams["font.family"] = "DejaVu Sans"
+        
+    plt.rcParams["axes.unicode_minus"] = False  # 마이너스 깨짐 방지
 
 # 폰트 설정 적용
-set_server_safe_font()
+set_local_font()
 
 # ── 페이지 설정 ──────────────────────────────────────────────────────────────
 st.set_page_config(page_title="환자 군집 분석", page_icon="🏥", layout="centered")
@@ -119,5 +114,3 @@ if st.button("🔍 군집 분석하기", use_container_width=True):
     ax.legend(loc="upper left", fontsize=9)
     ax.grid(True, linestyle="--", alpha=0.4)
     plt.tight_layout()
-
-    st.pyplot(fig)
