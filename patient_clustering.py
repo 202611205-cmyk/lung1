@@ -1,4 +1,4 @@
-import koreanize-matplotlib
+import koreanize_matplotlib
 import streamlit as st
 import numpy as np
 import matplotlib
