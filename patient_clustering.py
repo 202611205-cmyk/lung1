@@ -1,11 +1,34 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+import urllib.request
 from sklearn.cluster import KMeans
+import os
 
-# ── 한글 폰트 설정 ──────────────────────────────────────────────────────────
-# 라이브러리 import만으로 모든 Matplotlib 그래프에 한글이 자동 적용됩니다.
-import koreanize_matplotlib  
+# ── [서버 호환용] 한글 폰트 다운로드 및 설정 ──────────────────────────────────
+@st.cache_resource
+def download_and_set_font():
+    # 1. 폰트를 저장할 경로 및 다운로드 URL 설정 (나눔바른고딕)
+    font_path = "NanumBarunGothic.ttf"
+    font_url = "https://github.com/google/fonts/raw/main/ofl/nanumbarungothic/NanumBarunGothic.ttf"
+    
+    # 2. 파일이 없으면 다운로드
+    if not os.path.exists(font_path):
+        try:
+            urllib.request.urlretrieve(font_url, font_path)
+        except Exception as e:
+            st.error(f"폰트 다운로드 실패: {e}")
+            return
+            
+    # 3. Matplotlib에 폰트 등록
+    fm.fontManager.addfont(font_path)
+    prop = fm.FontProperties(fname=font_path)
+    plt.rcParams["font.family"] = prop.get_name()
+    plt.rcParams["axes.unicode_minus"] = False  # 마이너스 기호 깨짐 방지
+
+# 폰트 설정 함수 실행
+download_and_set_font()
 
 # ── 페이지 설정 ──────────────────────────────────────────────────────────────
 st.set_page_config(page_title="환자 군집 분석", page_icon="🏥", layout="centered")
