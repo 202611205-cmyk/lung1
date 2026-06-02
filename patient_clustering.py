@@ -1,31 +1,11 @@
 import streamlit as st
 import numpy as np
-import matplotlib
 import matplotlib.pyplot as plt
-import matplotlib.font_manager as fm
 from sklearn.cluster import KMeans
-import os
 
 # ── 한글 폰트 설정 ──────────────────────────────────────────────────────────
-# 시스템에 설치된 폰트 중 한글 지원 폰트 자동 탐색
-def set_korean_font():
-    candidates = [
-        "NanumGothic", "NanumBarunGothic", "Malgun Gothic",
-        "AppleGothic", "UnDotum", "Noto Sans KR", "NanumMyeongjo",
-    ]
-    available = {f.name for f in fm.fontManager.ttflist}
-    for c in candidates:
-        if c in available:
-            matplotlib.rc("font", family=c)
-            matplotlib.rcParams["axes.unicode_minus"] = False
-            return c
-
-    # 폴백: DejaVu Sans (한글 미지원이지만 크래시 방지)
-    matplotlib.rc("font", family="DejaVu Sans")
-    matplotlib.rcParams["axes.unicode_minus"] = False
-    return None
-
-chosen_font = set_korean_font()
+# 라이브러리 import만으로 모든 Matplotlib 그래프에 한글이 자동 적용됩니다.
+import koreanize_matplotlib  
 
 # ── 페이지 설정 ──────────────────────────────────────────────────────────────
 st.set_page_config(page_title="환자 군집 분석", page_icon="🏥", layout="centered")
@@ -119,9 +99,3 @@ if st.button("🔍 군집 분석하기", use_container_width=True):
     plt.tight_layout()
 
     st.pyplot(fig)
-
-    if chosen_font is None:
-        st.caption(
-            "⚠️ 한글 폰트가 설치되어 있지 않아 그래프 레이블이 깨질 수 있습니다. "
-            "`pip install koreanize-matplotlib` 후 재실행하면 해결됩니다."
-        )
