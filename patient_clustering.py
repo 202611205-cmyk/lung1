@@ -1,3 +1,4 @@
+import platform
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
@@ -13,8 +14,8 @@ def set_local_font():
     if os.path.exists(font_path):
         # 폰트 등록 및 적용
         fm.fontManager.addfont(font_path)
-        prop = fm.FontProperties(fname=font_path)
-        plt.rcParams["font.family"] = prop.get_name()
+        # 폰트 매니저에 등록한 폰트의 정확한 이름을 강제로 사용하도록 지정
+        plt.rcParams["font.family"] = "NanumGothic"
     else:
         # 파일이 없을 때를 대비한 폴백
         plt.rcParams["font.family"] = "DejaVu Sans"
@@ -87,7 +88,9 @@ if st.button("🔍 군집 분석하기", use_container_width=True):
     )
     st.markdown("0번은 매우 건강군, 1번은 위험군, 2번은 건강군입니다.")
 
-    # ── 산점도 ───────────────────────────────────────────────────────────────
+    # ── 산점도 그리기 직전 안전하게 폰트 다시 세팅 ──────────────────────────────
+    set_local_font() 
+    
     fig, ax = plt.subplots(figsize=(7, 5))
 
     color_map = ["#F4A72A", "#4C7FBF", "#3BAA5C"]
@@ -114,3 +117,6 @@ if st.button("🔍 군집 분석하기", use_container_width=True):
     ax.legend(loc="upper left", fontsize=9)
     ax.grid(True, linestyle="--", alpha=0.4)
     plt.tight_layout()
+    
+    # ── Streamlit에 그래프 출력 (기존 코드에 빠져있던 부분 추가) ───────────────
+    st.pyplot(fig)
