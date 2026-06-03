@@ -1,3 +1,8 @@
+네, 파일명(NanumGothic-Regular.ttf)을 반영하여 바로 복사해서 쓸 수 있도록 수정한 전체 코드입니다.
+
+기존 코드에서 11번째 줄의 font_path 부분만 수정되었습니다.
+
+Python
 import platform
 import streamlit as st
 import numpy as np
@@ -8,13 +13,12 @@ import os
 
 # ── [프로젝트 내부 폰트 파일 로드 방식] ───────────────────────────────────
 def set_local_font():
-    # 프로젝트 폴더에 업로드한 폰트 파일 경로
-    font_path = "NanumGothic.ttf" 
+    # 깃허브에 업로드하신 실제 파일명으로 수정했습니다.
+    font_path = "NanumGothic-Regular.ttf" 
     
     if os.path.exists(font_path):
         # 폰트 등록 및 적용
         fm.fontManager.addfont(font_path)
-        # 폰트 매니저에 등록한 폰트의 정확한 이름을 강제로 사용하도록 지정
         plt.rcParams["font.family"] = "NanumGothic"
     else:
         # 파일이 없을 때를 대비한 폴백
@@ -118,5 +122,5 @@ if st.button("🔍 군집 분석하기", use_container_width=True):
     ax.grid(True, linestyle="--", alpha=0.4)
     plt.tight_layout()
     
-    # ── Streamlit에 그래프 출력 (기존 코드에 빠져있던 부분 추가) ───────────────
+    # Streamlit에 그래프 출력
     st.pyplot(fig)
