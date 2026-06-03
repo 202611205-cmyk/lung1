@@ -1,8 +1,3 @@
-네, 파일명(NanumGothic-Regular.ttf)을 반영하여 바로 복사해서 쓸 수 있도록 수정한 전체 코드입니다.
-
-기존 코드에서 11번째 줄의 font_path 부분만 수정되었습니다.
-
-Python
 import platform
 import streamlit as st
 import numpy as np
@@ -13,18 +8,15 @@ import os
 
 # ── [프로젝트 내부 폰트 파일 로드 방식] ───────────────────────────────────
 def set_local_font():
-    # 깃허브에 업로드하신 실제 파일명으로 수정했습니다.
     font_path = "NanumGothic-Regular.ttf" 
     
     if os.path.exists(font_path):
-        # 폰트 등록 및 적용
         fm.fontManager.addfont(font_path)
         plt.rcParams["font.family"] = "NanumGothic"
     else:
-        # 파일이 없을 때를 대비한 폴백
         plt.rcParams["font.family"] = "DejaVu Sans"
         
-    plt.rcParams["axes.unicode_minus"] = False  # 마이너스 깨짐 방지
+    plt.rcParams["axes.unicode_minus"] = False
 
 # 폰트 설정 적용
 set_local_font()
@@ -51,11 +43,8 @@ if st.button("🔍 군집 분석하기", use_container_width=True):
     # ── 샘플 데이터 생성 (재현 가능) ─────────────────────────────────────────
     rng = np.random.default_rng(42)
 
-    # 군집 0: 매우 건강군 (흡연·음주 낮음)
     c0 = rng.multivariate_normal([4, 1.5], [[2, 0.3], [0.3, 0.5]], 30)
-    # 군집 1: 위험군 (흡연 중간, 음주 중간)
     c1 = rng.multivariate_normal([18, 5], [[8, 1], [1, 1]], 30)
-    # 군집 2: 건강군 (흡연 높음, 음주 높음)
     c2 = rng.multivariate_normal([28, 6.5], [[10, 1], [1, 1]], 30)
 
     X = np.vstack([c0, c1, c2])
@@ -65,8 +54,7 @@ if st.button("🔍 군집 분석하기", use_container_width=True):
     km = KMeans(n_clusters=3, random_state=42, n_init=10)
     km.fit(X)
 
-    # 군집 레이블을 샘플 데이터의 참 레이블과 맞춤 (centroid x 좌표 기준 정렬)
-    order = np.argsort(km.cluster_centers_[:, 0])          # x축(흡연량) 기준 정렬
+    order = np.argsort(km.cluster_centers_[:, 0])
     remap = {old: new for new, old in enumerate(order)}
     labels_mapped = np.array([remap[l] for l in km.labels_])
 
@@ -122,5 +110,4 @@ if st.button("🔍 군집 분석하기", use_container_width=True):
     ax.grid(True, linestyle="--", alpha=0.4)
     plt.tight_layout()
     
-    # Streamlit에 그래프 출력
     st.pyplot(fig)
